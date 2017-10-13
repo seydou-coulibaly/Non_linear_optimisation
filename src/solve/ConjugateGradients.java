@@ -1,5 +1,4 @@
 package solve;
-import line.Dichotomy;
 import line.LineSearch;
 import func.RealFunc;
 import util.Vector;
@@ -17,7 +16,6 @@ public class ConjugateGradients extends Algorithm {
 	
 	private RealFunc f;
 	private LineSearch s;
-	private Dichotomy dicho;
 
 	/**
 	 * Build the algorithm for a given function and
@@ -31,7 +29,6 @@ public class ConjugateGradients extends Algorithm {
 		/* TODO */
 		this.f = f;
 		this.s = s;
-		this.dicho = new Dichotomy(f);
 	
 	}
 	
@@ -52,13 +49,11 @@ public class ConjugateGradients extends Algorithm {
 	 */
 	public void compute_next() throws EndOfIteration {
 		
-		xk = iter_vec;
-		
+		xk = iter_vec;		
 		if(current_iteration()==0){
 			dk = f.grad(xk).leftmul(-1);
 		}
 		
-		// à la sortie, on a la bonne direction correspondante à alpha courant
 		if(f.grad(xk).norm()<= getEpsilon()) {
 			if (log) System.out.println("[ConjugateGradients] exit: Trop proche du pas optimal pour itérer");
 			throw new EndOfIteration();
