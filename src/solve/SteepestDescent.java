@@ -48,10 +48,10 @@ public class SteepestDescent extends Algorithm {
 		
 		// 3-calcul du pas alphaK par une methode de recherche en ligne suivant
 		// la direction opposée au gradient
-		double alphaK = s.search(xk,d);
+		double alpha = s.search(xk,d);
 		
 		// calcul du nouvel itéré xk+1
-		Vector xk1 = xk.add(d.leftmul(alphaK));
+		Vector xk1 = xk.add(d.leftmul(alpha));
 		// Mis à jour pas optimal
 		iter_vec=xk1;
 	}

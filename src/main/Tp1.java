@@ -148,13 +148,13 @@ public class Tp1 {
 	
 	public static void main(String[] args) {
 		
-//		steepestAlmostDiag1();
+		steepestAlmostDiag1();
 		
 //		steepestAlmostDiag2();
 		
 //		steepestHilbert();
 		
-		steepestRosenbrock();
+//		steepestRosenbrock();
 //		
 //		conjgradAlmostDiag();
 //		

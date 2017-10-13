@@ -11,6 +11,13 @@ import util.Vector;
  *
  */
 public class ConjugateGradients extends Algorithm {
+	
+	Vector dk ;
+	Vector xk ;
+	
+	private RealFunc f;
+	private LineSearch s;
+	private Dichotomy dicho;
 
 	/**
 	 * Build the algorithm for a given function and
@@ -22,6 +29,9 @@ public class ConjugateGradients extends Algorithm {
 	public ConjugateGradients(RealFunc f, LineSearch s) {
 
 		/* TODO */
+		this.f = f;
+		this.s = s;
+		this.dicho = new Dichotomy(f);
 	
 	}
 	
@@ -41,9 +51,24 @@ public class ConjugateGradients extends Algorithm {
 	 * (update iter_vec).
 	 */
 	public void compute_next() throws EndOfIteration {
-
-		/* TODO */
 		
-		iter_vec=null;
+		xk = iter_vec;
+		
+		if(current_iteration()==0){
+			dk = f.grad(xk).leftmul(-1);
+		}
+		
+		// à la sortie, on a la bonne direction correspondante à alpha courant
+		if(f.grad(xk).norm()<= getEpsilon()) {
+			if (log) System.out.println("[ConjugateGradients] exit: Trop proche du pas optimal pour itérer");
+			throw new EndOfIteration();
+		}
+		
+		double alpha = s.search(xk,dk);
+		Vector xk1 = xk.add(dk.leftmul(alpha));
+		//Mettre à jour xk et dk
+		double beta = ((Math.pow(f.grad(xk1).norm(), 2)) / (Math.pow(f.grad(xk).norm(), 2))) ;
+		dk = f.grad(xk1).leftmul(-1).add(dk.leftmul(beta));
+		iter_vec=xk1;
 	}
 }
