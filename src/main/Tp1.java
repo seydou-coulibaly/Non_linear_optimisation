@@ -47,6 +47,8 @@ public class Tp1 {
 		//faire gaffe à ce que nbi soit plus petit que N
 		System.out.println("iterations number : "+nbi);
 		
+		//Calcule de gap[i] et son affichage
+		System.out.println("iteration	GAP[iteration]");		
 	    for (int i=0; i<nbi; i++) {
 	    	it[i]  = i ;
 			gap[i] = Math.log(f.eval(xkplus.get(i))-(f.eval(xopt)));
@@ -54,6 +56,7 @@ public class Tp1 {
 	    }
 	    System.out.println("iterations number : "+nbi);
 	    System.out.println("Xopt :  "+xopt.toString());
+	    
 		
 		/* Generate the graphic */
 		new Plot(plotTitle,"#iter","log(x-x*)",fileName,it,gap);
@@ -150,7 +153,7 @@ public class Tp1 {
 		
 //		steepestAlmostDiag1();
 		
-//		steepestAlmostDiag2();
+//		steepestAlmostDiag2(); //xk+1 est borné par 0.25 * xk
 		
 //		steepestHilbert();
 		
