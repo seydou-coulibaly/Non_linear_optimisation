@@ -12,7 +12,7 @@ public class Rosenbrock implements RealFunc {
 	
 	public Vector grad(Vector v) {
 		
-		double x = 400 * (Math.pow(v.get(0),3)) + 2 * v.get(0) -400 * v.get(1)-2 ;
+		double x = 400 * (Math.pow(v.get(0),3)) + 2 * v.get(0) -400 * v.get(1)* v.get(0)-2;
 		double y = 200 * v.get(1) - 200 *  (Math.pow(v.get(0),2));		
 		return new Vector(new double[] {x,y});
 	}

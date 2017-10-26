@@ -153,7 +153,7 @@ public class Tp1 {
 		
 //		steepestAlmostDiag1();
 		
-//		steepestAlmostDiag2(); //xk+1 est borné par 0.25 * xk
+//		steepestAlmostDiag2();
 		
 //		steepestHilbert();
 		
@@ -163,7 +163,7 @@ public class Tp1 {
 	
 //		conjgradHilbert();
 		
-//		conjgradRosenbrock();
+		conjgradRosenbrock();
 
 		
 	}
