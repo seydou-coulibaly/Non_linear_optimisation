@@ -40,12 +40,6 @@ public class SteepestDescent extends Algorithm {
 		Vector xk = iter_vec;
 		Vector d = f.grad(xk).leftmul(-1);
 		
-		// 2-test d'arret par rapport à epsilon de la norme du gradient
-		if(f.grad(xk).norm()<= getEpsilon()) {
-			if (log) System.out.println("[SteepestDescent] exit: Trop proche du pas optimal pour itérer");
-			throw new EndOfIteration();
-		}
-		
 		// 3-calcul du pas alphaK par une methode de recherche en ligne suivant
 		// la direction opposée au gradient
 		double alpha = s.search(xk,d);

@@ -131,6 +131,19 @@ public class Matrix {
 			v2.set(i, rows[i].scalar(v));
 		return v2;
 	}
+	
+	/**
+	 * @return alpha * M
+	 */
+	public Matrix leftmul(double alpha) {
+		Matrix v= new Matrix(m,n);
+		for (int i=0; i<m; i++) {
+			for (int j=0; j<n; j++) {
+				v.set(i,j,(alpha * get(i,j)));
+			}
+		}
+		return v;
+	}
 
 	/**
 	 * Build the nxn identity matrix.

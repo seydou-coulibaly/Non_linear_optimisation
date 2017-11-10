@@ -11,9 +11,7 @@ import util.Vector;
  */
 public class ConjugateGradients extends Algorithm {
 	
-	Vector dk ;
-	Vector xk ;
-	
+	public Vector dk ;	
 	private RealFunc f;
 	private LineSearch s;
 
@@ -25,10 +23,10 @@ public class ConjugateGradients extends Algorithm {
 	 * @param s the line search algorithm
 	 */
 	public ConjugateGradients(RealFunc f, LineSearch s) {
-
-		/* TODO */
+		
 		this.f = f;
 		this.s = s;
+		this.dk = new Vector(f.dim());
 	
 	}
 	
@@ -36,10 +34,7 @@ public class ConjugateGradients extends Algorithm {
 	 * Start the iteration
 	 */
 	public void start(Vector x0) {
-		super.start(x0);
-
-		/* TODO */
-		
+		super.start(x0);		
 	}
 	
 	/**
@@ -48,22 +43,14 @@ public class ConjugateGradients extends Algorithm {
 	 * (update iter_vec).
 	 */
 	public void compute_next() throws EndOfIteration {
-		
-		xk = iter_vec;		
-		if(current_iteration()==0){
-			dk = f.grad(xk).leftmul(-1);
+		if(current_iteration()== 0) {
+			dk = f.grad(iter_vec).leftmul(-1);
 		}
-		
-		if(f.grad(xk).norm()<= getEpsilon()) {
-			if (log) System.out.println("[ConjugateGradients] exit: Trop proche du pas optimal pour itérer");
-			throw new EndOfIteration();
-		}
-		
-		double alpha = s.search(xk,dk);
-		Vector xk1 = xk.add(dk.leftmul(alpha));
-		//Mettre à jour xk et dk
-		double beta = ((Math.pow(f.grad(xk1).norm(), 2)) / (Math.pow(f.grad(xk).norm(), 2))) ;
+		double alpha = s.search(iter_vec,dk);
+		Vector xk1 = iter_vec.add(dk.leftmul(alpha));
+		//Mettre à jour iter_vec et dk
+		double beta = ((Math.pow(f.grad(xk1).norm(), 2)) / (Math.pow(f.grad(iter_vec).norm(), 2))) ;
 		dk = f.grad(xk1).leftmul(-1).add(dk.leftmul(beta));
-		iter_vec=xk1;
+		iter_vec = xk1;
 	}
 }

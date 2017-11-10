@@ -17,7 +17,7 @@ public abstract class Algorithm {
 	/**
 	 * Log flag
 	 */
-	public boolean log=false;
+	public boolean log =false;
 
 	/**
 	 * Current vector
@@ -153,8 +153,11 @@ public abstract class Algorithm {
 			
 			iter_nb++;
 			
+			//System.out.println(iter_nb);
+			
 			return current_vector();	
 		} catch(EndOfIteration e) { // can be raised also by compute_next
+			//System.out.println("exception");
 			return null;
 		}
 

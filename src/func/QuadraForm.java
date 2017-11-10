@@ -12,7 +12,7 @@ public class QuadraForm implements RealFunc {
 	
 	@Override
 	public double eval(Vector x) {
-		return  0.5 * x.scalar(Q.mult(x));
+		return  0.5 * x.scalar(Q.mult(x)) ; //-b.scalar(x);
 	}
 
 	@Override
