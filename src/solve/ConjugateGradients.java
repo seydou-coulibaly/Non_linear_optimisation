@@ -11,7 +11,7 @@ import util.Vector;
  */
 public class ConjugateGradients extends Algorithm {
 	
-	public Vector dk ;	
+	private Vector dk ;	
 	private RealFunc f;
 	private LineSearch s;
 
@@ -26,7 +26,6 @@ public class ConjugateGradients extends Algorithm {
 		
 		this.f = f;
 		this.s = s;
-		this.dk = new Vector(f.dim());
 	
 	}
 	
@@ -34,7 +33,8 @@ public class ConjugateGradients extends Algorithm {
 	 * Start the iteration
 	 */
 	public void start(Vector x0) {
-		super.start(x0);		
+		super.start(x0);
+		dk = f.grad(iter_vec).leftmul(-1);
 	}
 	
 	/**
@@ -43,9 +43,6 @@ public class ConjugateGradients extends Algorithm {
 	 * (update iter_vec).
 	 */
 	public void compute_next() throws EndOfIteration {
-		if(current_iteration()== 0) {
-			dk = f.grad(iter_vec).leftmul(-1);
-		}
 		double alpha = s.search(iter_vec,dk);
 		Vector xk1 = iter_vec.add(dk.leftmul(alpha));
 		//Mettre à jour iter_vec et dk

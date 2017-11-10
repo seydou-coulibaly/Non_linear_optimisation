@@ -163,7 +163,7 @@ public class Tp1 {
 	
 //		conjgradHilbert();
 		
-		conjgradRosenbrock();
+//		conjgradRosenbrock();
 
 		
 	}

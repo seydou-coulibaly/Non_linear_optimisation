@@ -1,5 +1,5 @@
 package solve;
-import line.Dichotomy;
+//import line.Dichotomy;
 import line.LineSearch;
 import func.RealFunc;
 import util.Vector;
@@ -14,7 +14,7 @@ public class SteepestDescent extends Algorithm {
 	
 	private RealFunc f;
 	private LineSearch s;
-	private Dichotomy dicho;
+	//private Dichotomy dicho;
 	
 	
 	/**
@@ -26,7 +26,7 @@ public class SteepestDescent extends Algorithm {
 	public SteepestDescent(RealFunc f, LineSearch s) {
 		this.f = f;
 		this.s = s;
-		this.dicho = new Dichotomy(f);
+		//this.dicho = new Dichotomy(f);
 	}
 
 	

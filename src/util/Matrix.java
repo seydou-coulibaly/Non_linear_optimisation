@@ -133,13 +133,13 @@ public class Matrix {
 	}
 	
 	/**
-	 * @return alpha * M
+	 * Return lambda*x.
 	 */
-	public Matrix leftmul(double alpha) {
+	public Matrix leftmul(double lambda) {
 		Matrix v= new Matrix(m,n);
-		for (int i=0; i<m; i++) {
-			for (int j=0; j<n; j++) {
-				v.set(i,j,(alpha * get(i,j)));
+		for (int i=0; i<m; i++){
+			for (int j=0; j<n; j++){
+				v.set(i,j,(lambda*get(i,j)));
 			}
 		}
 		return v;
