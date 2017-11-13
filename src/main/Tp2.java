@@ -16,11 +16,10 @@ import func.Hilbert;
 import func.RealFunc;
 import func.Rosenbrock;
 
-public class Tp1 {
-	
+public class Tp2 {
 	public final static int N=10000;
 	public final static double PREC=1e-8;
-	
+
 	/**
 	 * Run an unconstrained local search algorithm on a problem and plot
 	 * the convergence behavior.
@@ -168,4 +167,5 @@ public class Tp1 {
 
 		
 	}
+
 }

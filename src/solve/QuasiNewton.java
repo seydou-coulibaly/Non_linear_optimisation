@@ -137,17 +137,37 @@ public class QuasiNewton extends Algorithm {
 			}
 			xk1 = (iter_vec).add(d.leftmul(alpha));
 		}
+		// ----------------------------------------------------------------------------
 		
 		double adequation = (f.eval(iter_vec)-f.eval(xk1))/(Q.eval(iter_vec)-Q.eval(xk1));
-		if(adequation >= GOOD_ADEQUACY) {
+		if(adequation >= GOOD_ADEQUACY && dt < DELTA_MAX) {
 			dt = DELTA_RATIO * dt ;			
-		}else if(adequation <= POOR_ADEQUACY) {
+		}else if(adequation <= POOR_ADEQUACY && dt > DELTA_MIN ) {
 			dt = dt / DELTA_RATIO ;
-		}else {
-			dt = dt ;
 		}
-		//mis a jour de H
+		// ----------------------------------------------------------------------------
+		
 		//mis a jour de A
+		Vector Dx = xk1.sub(iter_vec);
+		Vector Dg = f.grad(xk1).sub(f.grad(iter_vec));
+		double error ;
+		if(Dx.scalar(Dg.sub( A.mult(Dx))) > SMALL_CURVATURE) {
+			error = Dg.sub( A.mult(Dx)).scalar(Dg.sub( A.mult(Dx))) / Dx.scalar(Dg.sub( A.mult(Dx))) ;
+			A = A.add(error);
+		}
+		
+		//mis a jour de H
+		if(Dg.scalar(Dx.sub(H.mult(Dg))) > SMALL_CURVATURE) {
+			error = Dx.sub(H.mult(Dg)).scalar(Dx.sub(H.mult(Dg))) / Dg.scalar(Dx.sub(H.mult(Dg)));
+			H = H.add(error);
+		}
+		
+		// ----------------------------------------------------------------------------
+		iter_vec = xk1 ;
+		if(f.grad(xk1).norm() <= GRADIENT_MIN_NORM || dt <= DELTA_MIN) {
+			throw new EndOfIteration();
+		}
+		
 	}
 	
 
