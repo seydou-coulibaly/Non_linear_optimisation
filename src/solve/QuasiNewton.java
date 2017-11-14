@@ -2,7 +2,6 @@ package solve;
 
 import util.Vector;
 import util.Matrix;
-import line.LineSearch;
 import func.QuadraForm;
 import func.RealFunc;
 
@@ -13,8 +12,6 @@ import func.RealFunc;
 
 public class QuasiNewton extends Algorithm {
 	
-
-	//private LineSearch s;
 	/**
 	* Fonction F
 	*/
@@ -80,10 +77,8 @@ public class QuasiNewton extends Algorithm {
 	 * @param s underlying line search algorithm
 	 */
 	
-	public QuasiNewton (RealFunc f, LineSearch s) {
-		this.f = f;
-		//this.s = s;
-	
+	public QuasiNewton (RealFunc f) {
+		this.f = f;	
 	}
 	
 	/**
@@ -97,7 +92,7 @@ public class QuasiNewton extends Algorithm {
 	/**
 	 * Start the iteration
 	 */
-	public void start(Vector x0, double dt0) {
+	public void start(Vector x0) {
 		super.start(x0);
 		this.dt = DELTA_INIT;
 		this.A = A.identity(x0.size());
@@ -150,15 +145,15 @@ public class QuasiNewton extends Algorithm {
 		//mis a jour de A
 		Vector Dx = xk1.sub(iter_vec);
 		Vector Dg = f.grad(xk1).sub(f.grad(iter_vec));
-		double error ;
+		Matrix error ;
 		if(Dx.scalar(Dg.sub( A.mult(Dx))) > SMALL_CURVATURE) {
-			error = Dg.sub( A.mult(Dx)).scalar(Dg.sub( A.mult(Dx))) / Dx.scalar(Dg.sub( A.mult(Dx))) ;
+			error = Dg.sub( A.mult(Dx)).mult(Dg.sub( A.mult(Dx))).leftmul(Dx.scalar(Dg.sub( A.mult(Dx)))) ;
 			A = A.add(error);
 		}
 		
 		//mis a jour de H
 		if(Dg.scalar(Dx.sub(H.mult(Dg))) > SMALL_CURVATURE) {
-			error = Dx.sub(H.mult(Dg)).scalar(Dx.sub(H.mult(Dg))) / Dg.scalar(Dx.sub(H.mult(Dg)));
+			error = Dx.sub(H.mult(Dg)).mult(Dx.sub(H.mult(Dg))).leftmul(Dg.scalar(Dx.sub(H.mult(Dg))));
 			H = H.add(error);
 		}
 		

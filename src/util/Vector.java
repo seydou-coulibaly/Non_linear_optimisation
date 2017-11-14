@@ -170,6 +170,21 @@ public class Vector {
 	}
 	
 	/**
+	 * Return X * Vt>.
+	 */
+	public Matrix mult(Vector v) {
+		assert(n==v.size());
+		Matrix m = new Matrix(n,n);
+		for (int i=0; i<n; i++) {
+			for(int j=0;j<n;j++) {
+				m.set(i,j,(get(i)*v.get(j)));				
+			}
+		}
+		return m;
+		
+	}
+	
+	/**
 	 * Return ||x||.
 	 */
 	public double norm() {

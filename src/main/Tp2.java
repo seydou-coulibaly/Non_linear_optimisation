@@ -1,11 +1,6 @@
 package main;
-
-import line.SlopeIter;
-
 import solve.Algorithm;
-import solve.SteepestDescent;
-import solve.ConjugateGradients;
-
+import solve.QuasiNewton;
 import util.Vector;
 import util.Plot;
 
@@ -62,57 +57,7 @@ public class Tp2 {
 		new Plot(plotTitle,"#iter","log(x-x*)",fileName,it,gap);
 	}
 
-
-	public static void steepestAlmostDiag1() {
-		AlmostDiag almostDiag5=new AlmostDiag(5);
-		Vector zero5 = new Vector(new double[] {0,0,0,0,0});
-		Vector x0 = new Vector(new double[] {1,2,-1,3,1});
-
-		run(almostDiag5, 
-			zero5,
-			x0,
-			new SteepestDescent(almostDiag5, 
-			new SlopeIter(almostDiag5)), "Steepest descent - AlmostDiag","steep_almostdiag.jpg");
-	}
-	
-	public static void steepestAlmostDiag2() {
-		RealFunc almostDiag5=new AlmostDiag(5);
-		Vector zero5 = new Vector(new double[] {0,0,0,0,0});
-		
-		Vector x0 = new Vector(new double[] {0.74536,1.21120,1.21120,1.21120,1.21120});
-		
-		run(almostDiag5, 
-			zero5,
-			x0,
-			new SteepestDescent(almostDiag5, 
-			new SlopeIter(almostDiag5)), "Steepest descent - AlmostDiag (worst case)","steep_almostdiag_worst_case.jpg");
-	}
-	
-	public static void steepestHilbert() {
-		RealFunc hilbert5=new Hilbert(5);
-		Vector zero5 = new Vector(new double[] {0,0,0,0,0});
-		Vector x0 = new Vector(new double[] {1,2,-1,3,1});
-
-		run(hilbert5, 
-			zero5,
-			x0,
-			new SteepestDescent(hilbert5, 
-			new SlopeIter(hilbert5)), "Steepest descent - Hilbert","steep_hilbert.jpg");
-	}
-	
-	public static void steepestRosenbrock() {
-		RealFunc rosenbrock  = new Rosenbrock();
-		Vector xopt          = new Vector(new double[] {1,1});
-		Vector x0            = new Vector(new double[] {1,2});
-
-		run(rosenbrock, 
-			xopt,
-			x0,
-			new SteepestDescent(rosenbrock, 
-			new SlopeIter(rosenbrock)), "Steepest descent - Rosenbrock","steep_rosenbrock.jpg");
-	}
-	
-	public static void conjgradAlmostDiag() {
+	public static void QuasiNewtonAlmostDiag() {
 		AlmostDiag almostDiag5=new AlmostDiag(5);
 		Vector zero5 = new Vector(new double[] {0,0,0,0,0});
 		Vector x0 = new Vector(new double[] {1,-2,-1,3,1});
@@ -120,11 +65,10 @@ public class Tp2 {
 		run(almostDiag5, 
 			zero5,
 			x0,
-			new ConjugateGradients(almostDiag5, 
-			new SlopeIter(almostDiag5)), "Conjugate gradients - AlmostDiag","conjgrad_almostdiag.jpg");
+			new QuasiNewton(almostDiag5), "QuasiNewton - AlmostDiag","QuasiNewton_almostdiag.jpg");
 	}
 	
-	public static void conjgradHilbert() {
+	public static void QuasiNewtonHilbert() {
 		RealFunc hilbert5=new Hilbert(5);
 		Vector zero5 = new Vector(new double[] {0,0,0,0,0});
 		Vector x0 = new Vector(new double[] {1,2,-1,3,1});
@@ -132,11 +76,10 @@ public class Tp2 {
 		run(hilbert5, 
 			zero5,
 			x0,
-			new ConjugateGradients(hilbert5, 
-			new SlopeIter(hilbert5)), "Conjugate gradients - Hilbert","conjgrad_hilbert.jpg");
+			new QuasiNewton(hilbert5), "QuasiNewton - Hilbert","QuasiNewton.jpg");
 	}
 	
-	public static void conjgradRosenbrock() {
+	public static void QuasiNewtonRosenbrock() {
 		RealFunc rosenbrock  = new Rosenbrock();
 		Vector xopt          = new Vector(new double[] {1,1});
 		Vector x0            = new Vector(new double[] {1,2});
@@ -144,26 +87,17 @@ public class Tp2 {
 		run(rosenbrock, 
 			xopt,
 			x0,
-			new ConjugateGradients(rosenbrock, 
-			new SlopeIter(rosenbrock)), "Conjugate gradients - Rosenbrock","conjgrad_rosenbrock.jpg");
+			new QuasiNewton(rosenbrock), "QuasiNewton - Rosenbrock","QuasiNewton_rosenbrock.jpg");
 	}
 	
 	
 	public static void main(String[] args) {
-		
-//		steepestAlmostDiag1();
-		
-//		steepestAlmostDiag2();
-		
-//		steepestHilbert();
-		
-//		steepestRosenbrock();
 	
-//		conjgradAlmostDiag();
+		QuasiNewtonAlmostDiag();
 	
-//		conjgradHilbert();
+//		QuasiNewtonHilbert();
 		
-//		conjgradRosenbrock();
+//		QuasiNewtonRosenbrock();
 
 		
 	}
