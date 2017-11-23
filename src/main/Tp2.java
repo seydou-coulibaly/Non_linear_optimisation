@@ -76,7 +76,7 @@ public class Tp2 {
 		run(hilbert5, 
 			zero5,
 			x0,
-			new QuasiNewton(hilbert5), "QuasiNewton - Hilbert","QuasiNewton.jpg");
+			new QuasiNewton(hilbert5), "QuasiNewton-Hilbert","QuasiNewton-Hilbert.jpg");
 	}
 	
 	public static void QuasiNewtonRosenbrock() {

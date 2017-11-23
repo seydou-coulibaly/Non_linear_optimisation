@@ -95,18 +95,18 @@ public class QuasiNewton extends Algorithm {
 	public void start(Vector x0) {
 		super.start(x0);
 		this.dt = DELTA_INIT;
-		this.A = A.identity(x0.size());
-		this.H = H.identity(x0.size());		
+		this.A = Matrix.identity(x0.size());
+		this.H = Matrix.identity(x0.size());		
 	}
 	
 	public void compute_next() throws EndOfIteration {
 		QuadraForm Q =  new QuadraForm(A,f.grad(iter_vec))  ;	
 		Vector d = H.mult(f.grad(iter_vec)).leftmul(-1);
-		Vector xk1 = (iter_vec).add(d);
+		Vector xq = (iter_vec).add(d);
 		
-		if(Q.eval(xk1) < Q.eval(iter_vec)){	
-			if (xk1.sub(iter_vec).norm()<= dt){
-				iter_vec = xk1 ;
+		if(Q.eval(xq) < Q.eval(iter_vec)){	
+			if (xq.sub(iter_vec).norm()<= dt){
+				//On garde le deplacement xq
 			}else{
 				d = f.grad(iter_vec).leftmul(-(dt)/(f.grad(iter_vec).norm()));
 				double alpha = 0 ;
@@ -117,7 +117,9 @@ public class QuasiNewton extends Algorithm {
 					alpha = (Math.pow(f.grad(iter_vec).norm(),3))/(dt * gQg);
 					alpha = min (alpha,1);
 				}
-				xk1 = (iter_vec).add(d.leftmul(alpha));
+				Vector cauchy = (iter_vec).add(d.leftmul(alpha));
+				// On s'attaque au dogleg
+				xq = cauchy ;
 			}
 			
 		}else {
@@ -130,11 +132,12 @@ public class QuasiNewton extends Algorithm {
 				alpha = (Math.pow(f.grad(iter_vec).norm(),3))/(dt * gQg);
 				alpha = min (alpha,1);
 			}
-			xk1 = (iter_vec).add(d.leftmul(alpha));
+			// Mis à jour direct du point cauchy dans xq
+			xq = (iter_vec).add(d.leftmul(alpha));
 		}
 		// ----------------------------------------------------------------------------
 		
-		double adequation = (f.eval(iter_vec)-f.eval(xk1))/(Q.eval(iter_vec)-Q.eval(xk1));
+		double adequation = (f.eval(iter_vec)-f.eval(xq))/(Q.eval(iter_vec)-Q.eval(xq));
 		if(adequation >= GOOD_ADEQUACY && dt < DELTA_MAX) {
 			dt = DELTA_RATIO * dt ;			
 		}else if(adequation <= POOR_ADEQUACY && dt > DELTA_MIN ) {
@@ -143,8 +146,8 @@ public class QuasiNewton extends Algorithm {
 		// ----------------------------------------------------------------------------
 		
 		//mis a jour de A
-		Vector Dx = xk1.sub(iter_vec);
-		Vector Dg = f.grad(xk1).sub(f.grad(iter_vec));
+		Vector Dx = xq.sub(iter_vec);
+		Vector Dg = f.grad(xq).sub(f.grad(iter_vec));
 		Matrix error ;
 		if(Dx.scalar(Dg.sub( A.mult(Dx))) > SMALL_CURVATURE) {
 			error = Dg.sub( A.mult(Dx)).mult(Dg.sub( A.mult(Dx))).leftmul(Dx.scalar(Dg.sub( A.mult(Dx)))) ;
@@ -158,8 +161,8 @@ public class QuasiNewton extends Algorithm {
 		}
 		
 		// ----------------------------------------------------------------------------
-		iter_vec = xk1 ;
-		if(f.grad(xk1).norm() <= GRADIENT_MIN_NORM || dt <= DELTA_MIN) {
+		iter_vec = xq ;
+		if(f.grad(xq).norm() <= GRADIENT_MIN_NORM || dt <= DELTA_MIN) {
 			throw new EndOfIteration();
 		}
 		
