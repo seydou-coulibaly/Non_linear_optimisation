@@ -12,7 +12,8 @@ public class Hilbert extends QuadraForm {
 				Q.set(i,j,((double)1/(i+j+1)));				
 			}
 		}
-
+		System.out.println("Hilbet=");
+		System.out.println(Q);
 		return Q;	
 	}
 	

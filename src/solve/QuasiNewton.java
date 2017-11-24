@@ -100,44 +100,56 @@ public class QuasiNewton extends Algorithm {
 	}
 	
 	public void compute_next() throws EndOfIteration {
-		QuadraForm Q =  new QuadraForm(A,f.grad(iter_vec))  ;	
-		Vector d = H.mult(f.grad(iter_vec)).leftmul(-1);
+		System.out.println("Matrice A");
+		System.out.println(A.toString());
+		System.out.println();
+		System.out.println("Matrice inverse H");
+		System.out.println(H.toString());
+		System.out.println();
+		
+		Vector g=f.grad(iter_vec);	
+		Vector b=g.leftmul(-1);
+		QuadraForm Q =  new QuadraForm(A,b);	
+	
+		Vector d = H.mult(b);
 		Vector xq = (iter_vec).add(d);
 		
-		if(Q.eval(xq) < Q.eval(iter_vec)){	
-			if (xq.sub(iter_vec).norm()<= dt){
-				//On garde le deplacement xq
-			}else{
-				d = f.grad(iter_vec).leftmul(-(dt)/(f.grad(iter_vec).norm()));
-				double alpha = 0 ;
-				double gQg = (f.grad(iter_vec)).scalar(A.mult(f.grad(iter_vec)));
-				if(gQg <= 0) {
-					alpha = 1 ;
-				}else {
-					alpha = (Math.pow(f.grad(iter_vec).norm(),3))/(dt * gQg);
-					alpha = min (alpha,1);
-				}
-				Vector cauchy = (iter_vec).add(d.leftmul(alpha));
-				// On s'attaque au dogleg
-				xq = cauchy ;
-			}
-			
-		}else {
-			d = f.grad(iter_vec).leftmul(-(dt)/(f.grad(iter_vec).norm()));
+//		if(Q.eval(xq) < Q.eval(iter_vec)){	
+//			if (xq.sub(iter_vec).norm()<= dt){
+//				//On garde le deplacement xq
+//			}else{
+//				d = f.grad(iter_vec).leftmul(-(dt)/(f.grad(iter_vec).norm()));
+//				double alpha = 0 ;
+//				double gQg = (f.grad(iter_vec)).scalar(A.mult(f.grad(iter_vec)));
+//				if(gQg <= 0) {
+//					alpha = 1 ;
+//				}else {
+//					alpha = (Math.pow(f.grad(iter_vec).norm(),3))/(dt * gQg);
+//					alpha = min (alpha,1);
+//				}
+//				Vector cauchy = (iter_vec).add(d.leftmul(alpha));
+//				// On s'attaque au dogleg
+//				xq = cauchy ;
+//			}
+//			
+//		}else {
+			d = g.leftmul(-(dt)/(g.norm()));
 			double alpha = 0 ;
-			double gQg = (f.grad(iter_vec)).scalar(A.mult(f.grad(iter_vec)));
+			double gQg = g.scalar(A.mult(g));
 			if(gQg <= 0) {
 				alpha = 1 ;
 			}else {
-				alpha = (Math.pow(f.grad(iter_vec).norm(),3))/(dt * gQg);
+				alpha = (Math.pow(g.norm(),3))/(dt * gQg);
 				alpha = min (alpha,1);
 			}
 			// Mis à jour direct du point cauchy dans xq
 			xq = (iter_vec).add(d.leftmul(alpha));
-		}
+		//}
+		
+		System.out.println("REGION DE CONFIANCE = "+dt);
 		// ----------------------------------------------------------------------------
 		
-		double adequation = (f.eval(iter_vec)-f.eval(xq))/(Q.eval(iter_vec)-Q.eval(xq));
+		double adequation = (f.eval(iter_vec)-f.eval(xq))/(Q.eval(iter_vec.sub(iter_vec))-Q.eval(xq.sub(iter_vec)));
 		if(adequation >= GOOD_ADEQUACY && dt < DELTA_MAX) {
 			dt = DELTA_RATIO * dt ;			
 		}else if(adequation <= POOR_ADEQUACY && dt > DELTA_MIN ) {
@@ -147,24 +159,30 @@ public class QuasiNewton extends Algorithm {
 		
 		//mis a jour de A
 		Vector Dx = xq.sub(iter_vec);
-		Vector Dg = f.grad(xq).sub(f.grad(iter_vec));
-		Matrix error ;
-		if(Dx.scalar(Dg.sub( A.mult(Dx))) > SMALL_CURVATURE) {
-			error = Dg.sub( A.mult(Dx)).mult(Dg.sub( A.mult(Dx))).leftmul(Dx.scalar(Dg.sub( A.mult(Dx)))) ;
-			A = A.add(error);
-		}
+		Vector Dg = f.grad(xq).sub(g);
+		Matrix correction ;
+		Vector error = Dg.sub( A.mult(Dx));
+		
+		System.out.println("A : Dx.scalar(error) = "+Dx.scalar(error));
+		if(Math.abs(Dx.scalar(error)) > SMALL_CURVATURE) {
+			correction = error.mult(error).leftmul(1/Dx.scalar(error)) ;
+			A = A.add(correction);
+		}else{System.out.println("Trop proche de zero denominateur de mis a jour de A");}
 		
 		//mis a jour de H
-		if(Dg.scalar(Dx.sub(H.mult(Dg))) > SMALL_CURVATURE) {
-			error = Dx.sub(H.mult(Dg)).mult(Dx.sub(H.mult(Dg))).leftmul(Dg.scalar(Dx.sub(H.mult(Dg))));
-			H = H.add(error);
-		}
+		error = Dx.sub(H.mult(Dg));
+		System.out.println("H : Dg.scalar(error) = "+Dg.scalar(error));
+			if(Math.abs(Dg.scalar(error)) > SMALL_CURVATURE) {
+				correction = error.mult(error).leftmul(1/Dg.scalar(error));
+			H = H.add(correction);
+		}else{System.out.println("Trop proche de zero denominateur de mis a jour de H");}
 		
 		// ----------------------------------------------------------------------------
 		iter_vec = xq ;
 		if(f.grad(xq).norm() <= GRADIENT_MIN_NORM || dt <= DELTA_MIN) {
 			throw new EndOfIteration();
 		}
+		System.out.println("------------------------------------------------------------------------------------------------");
 		
 	}
 	

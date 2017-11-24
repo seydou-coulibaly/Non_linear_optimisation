@@ -35,6 +35,7 @@ public class Tp2 {
 		ArrayList<Vector> xkplus = new ArrayList<Vector>();
 	
 		algo.start(x0);
+		algo.setMaxIteration(5);
 		algo.search(xkplus);
 		xopt = algo.current_vector();
 		int nbi = algo.current_iteration();
@@ -50,6 +51,8 @@ public class Tp2 {
 			System.out.println(i+"	"+gap[i]);
 	    }
 	    System.out.println("iterations number : "+nbi);
+	    
+	    
 	    System.out.println("Xopt :  "+xopt.toString());
 	    
 		
@@ -92,12 +95,11 @@ public class Tp2 {
 	
 	
 	public static void main(String[] args) {
-	
 		QuasiNewtonAlmostDiag();
 	
-//		QuasiNewtonHilbert();
+	//	QuasiNewtonHilbert();
 		
-//		QuasiNewtonRosenbrock();
+	//		QuasiNewtonRosenbrock();
 
 		
 	}
