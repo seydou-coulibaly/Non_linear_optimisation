@@ -14,7 +14,8 @@ public class AlmostDiag extends QuadraForm {
 				else {Q.set(i,j,((double)-1/n));}				
 			}
 		}
-		System.out.println("ALMOST DIAG="+Q);
+		System.out.println("ALMOST DIAG=\n"+Q);
+		System.out.println("===============================================");
 		return Q;	
 	
 	}

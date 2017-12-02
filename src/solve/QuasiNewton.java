@@ -114,25 +114,40 @@ public class QuasiNewton extends Algorithm {
 		Vector d = H.mult(b);
 		Vector xq = (iter_vec).add(d);
 		
-//		if(Q.eval(xq) < Q.eval(iter_vec)){	
-//			if (xq.sub(iter_vec).norm()<= dt){
-//				//On garde le deplacement xq
-//			}else{
-//				d = f.grad(iter_vec).leftmul(-(dt)/(f.grad(iter_vec).norm()));
-//				double alpha = 0 ;
-//				double gQg = (f.grad(iter_vec)).scalar(A.mult(f.grad(iter_vec)));
-//				if(gQg <= 0) {
-//					alpha = 1 ;
-//				}else {
-//					alpha = (Math.pow(f.grad(iter_vec).norm(),3))/(dt * gQg);
-//					alpha = min (alpha,1);
-//				}
-//				Vector cauchy = (iter_vec).add(d.leftmul(alpha));
-//				// On s'attaque au dogleg
-//				xq = cauchy ;
-//			}
-//			
-//		}else {
+		if(Q.eval(xq) < Q.eval(iter_vec)){	
+			if (xq.sub(iter_vec).norm()<= dt){
+				//On garde le deplacement xq
+			}else{
+				d = g.leftmul(-(dt)/(g.norm()));
+				double alpha = 0 ;
+				double gQg = g.scalar(A.mult(g));
+				if(gQg <= 0) {
+					alpha = 1 ;
+				}else {
+					alpha = (Math.pow(g.norm(),3))/(dt * gQg);
+					alpha = min (alpha,1);
+				}
+				Vector cauchy = (iter_vec).add(d.leftmul(alpha));
+				// On s'attaque au dogleg
+				// diff caracterise la direction suivant le segment cauchy-> xq
+				Vector diff = xq.sub(cauchy);
+				// on normalise diff
+				diff = diff.leftmul(1/diff.norm());
+				// Resoudre l'equation d'intersection segment sphere
+				double varDogleg = Math.pow(diff.scalar(iter_vec.sub(cauchy)),2) - Math.pow(iter_vec.sub(cauchy).norm(),2) + Math.pow(dt,2);
+				double distance = 0 ;
+				if(varDogleg > 0 ) {
+					distance = -diff.scalar(iter_vec.sub(cauchy)) + varDogleg;
+				}else {distance = -diff.scalar(iter_vec.sub(cauchy));}
+				// System.out.println("Dogled"+varDogleg);
+				// System.out.println("Distance"+distance);
+				Vector dogleg = cauchy.add(diff).leftmul(distance);
+				// System.out.println("dogleg :  "+dogleg.toString());
+				// System.out.println("cauchy :  "+cauchy.toString());
+				xq = dogleg ;
+			}
+			
+		}else {
 			d = g.leftmul(-(dt)/(g.norm()));
 			double alpha = 0 ;
 			double gQg = g.scalar(A.mult(g));
@@ -144,7 +159,7 @@ public class QuasiNewton extends Algorithm {
 			}
 			// Mis à jour direct du point cauchy dans xq
 			xq = (iter_vec).add(d.leftmul(alpha));
-		//}
+		}
 		
 		System.out.println("REGION DE CONFIANCE = "+dt);
 		// ----------------------------------------------------------------------------
@@ -163,19 +178,19 @@ public class QuasiNewton extends Algorithm {
 		Matrix correction ;
 		Vector error = Dg.sub( A.mult(Dx));
 		
-		System.out.println("A : Dx.scalar(error) = "+Dx.scalar(error));
+		// System.out.println("A : Dx.scalar(error) = "+Dx.scalar(error));
 		if(Math.abs(Dx.scalar(error)) > SMALL_CURVATURE) {
 			correction = error.mult(error).leftmul(1/Dx.scalar(error)) ;
 			A = A.add(correction);
-		}else{System.out.println("Trop proche de zero denominateur de mis a jour de A");}
+		}//else{System.out.println("Trop proche de zero denominateur de mis a jour de A");}
 		
 		//mis a jour de H
 		error = Dx.sub(H.mult(Dg));
-		System.out.println("H : Dg.scalar(error) = "+Dg.scalar(error));
+		// System.out.println("H : Dg.scalar(error) = "+Dg.scalar(error));
 			if(Math.abs(Dg.scalar(error)) > SMALL_CURVATURE) {
 				correction = error.mult(error).leftmul(1/Dg.scalar(error));
 			H = H.add(correction);
-		}else{System.out.println("Trop proche de zero denominateur de mis a jour de H");}
+		}//else{System.out.println("Trop proche de zero denominateur de mis a jour de H");}
 		
 		// ----------------------------------------------------------------------------
 		iter_vec = xq ;

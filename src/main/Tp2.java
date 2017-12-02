@@ -35,7 +35,7 @@ public class Tp2 {
 		ArrayList<Vector> xkplus = new ArrayList<Vector>();
 	
 		algo.start(x0);
-		algo.setMaxIteration(5);
+		algo.setMaxIteration(100);
 		algo.search(xkplus);
 		xopt = algo.current_vector();
 		int nbi = algo.current_iteration();
@@ -57,7 +57,7 @@ public class Tp2 {
 	    
 		
 		/* Generate the graphic */
-		new Plot(plotTitle,"#iter","log(x-x*)",fileName,it,gap);
+	    new Plot(plotTitle,"#iter","log(x-x*)",fileName,it,gap);
 	}
 
 	public static void QuasiNewtonAlmostDiag() {
@@ -95,11 +95,11 @@ public class Tp2 {
 	
 	
 	public static void main(String[] args) {
-		QuasiNewtonAlmostDiag();
+	//	QuasiNewtonAlmostDiag();
 	
 	//	QuasiNewtonHilbert();
 		
-	//		QuasiNewtonRosenbrock();
+		QuasiNewtonRosenbrock();
 
 		
 	}
